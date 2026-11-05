@@ -1,62 +1,51 @@
-# compiled output
-/dist
+# Dépendances
 /node_modules
-/build
 
-# TypeScript build cache
+# Build
+/dist
+/build
 *.tsbuildinfo
+
+# Client Prisma généré (`prisma generate`)
+/src/generated
+
+# Variables d'environnement (garder un éventuel .env.example)
+.env
+.env.*
+!.env.example
 
 # Logs
 logs
 *.log
-npm-debug.log*
-pnpm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-
-# OS
-.DS_Store
 
 # Tests
 /coverage
-/.nyc_output
 
-# IDEs and editors
-/.idea
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
-
-# IDE - VSCode
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-
-# dotenv environment variable files
-.env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
-
-# temp directory
+# Fichiers temporaires
 .temp
 .tmp
+/tmp
 
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
+# Pages générées par l'IA (data/raw et data/AGENTS.md sont versionnés)
+/data/wiki
 
-# Diagnostic reports (https://nodejs.org/api/report.html)
+# Skills des agents IA (réinstallables depuis skills-lock.json)
+/.agents/skills
+/.claude/skills
+/.windsurf/skills
+/.claude/settings.local.json
+
+# IDE / éditeurs
+/.idea
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Rapports de diagnostic Node
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
-
-# Fichiers du wiki
-/data

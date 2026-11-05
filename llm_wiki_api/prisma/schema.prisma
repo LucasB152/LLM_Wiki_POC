@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum MessageRole {
+  user
+  llm
+
+  @@map("message_role")
+}
+
+model Conversation {
+  id         String    @id @default(uuid()) @db.Uuid
+  title      String
+  createdAt  DateTime  @default(now()) @map("created_at")
+  modifiedAt DateTime  @updatedAt @map("modified_at")
+  messages   Message[]
+
+  @@map("conversation")
+}
+
+model Message {
+  id             String      @id @default(uuid()) @db.Uuid
+  conversationId String      @map("conversation_id") @db.Uuid
+  /// Null pour les messages de l'utilisateur
+  providerId     String?     @map("provider_id") @db.Uuid
+  /// Modèle utilisé pour générer la réponse (null pour les messages de l'utilisateur)
+  model          String?
+  createdAt      DateTime    @default(now()) @map("created_at")
+  content        String
+  /// Consommation de tokens renvoyée par le provider (input, output, ...)
+  usage          Json?
+  role           MessageRole
+  /// Sources utilisées pour la réponse (pages du wiki, fichiers, ...)
+  source         Json?
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  provider     Provider?    @relation(fields: [providerId], references: [id], onDelete: SetNull)
+
+  @@index([conversationId, createdAt])
+  @@map("message")
+}
+
+model Provider {
+  id           String    @id @default(uuid()) @db.Uuid
+  providerName String    @unique @map("provider_name")
+  apiKeys      ApiKey[]
+  messages     Message[]
+
+  @@map("provider")
+}
+
+model ApiKey {
+  id         String @id @default(uuid()) @db.Uuid
+  /// One key per provider
+  providerId String @unique @map("provider_id") @db.Uuid
+  /// Encrypted with AES-256-GCM (see ApiKeyCipher), never stored in plain text
+  key        String
+
+  provider Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@map("api_key")
+}
